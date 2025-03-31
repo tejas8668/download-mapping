@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Drive Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        .download-btn { 
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF Drive Downloader</h1>
+    <div class="form-group">
+        <label for="url">Enter PDF Drive URL:</label>
+        <input type="text" id="url" placeholder="https://www.pdfdrive.com/...">
+        <button onclick="checkAndDownload()">Get Download Link</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        // Mapping of PDF Drive URLs to their download links
+        const urlMapping = {
+            'https://www.pdfdrive.com/the-48-laws-of-power-d186479357.html': 
+                'https://www.pdfdrive.com/download.pdf?id=186479357&h=67199f645c0cfeaf3262aacd2a27bd0d&u=cache&ext=pdf',
+            'https://www.pdfdrive.com/give-and-take-why-helping-others-drives-our-success-d58864799.html': 
+                'https://www.pdfdrive.com/download.pdf?id=58864799&h=c55ee8a467a370dd11fcf9dcec21f426&u=cache&ext=pdf'
+        };
+
+        // Function to get URL parameters and handle @ symbol
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            let url = params.get('url');
+            if (url && url.startsWith('@')) {
+                url = url.substring(1); // Remove the @ symbol
+            }
+            return { url };
+        }
+
+        // Function to show download button
+        function showDownloadButton(downloadUrl) {
+            document.getElementById('result').innerHTML = `
+                <h2>Download Link:</h2>
+                <a href="${downloadUrl}" class="download-btn" target="_blank">Download PDF</a>
+            `;
+        }
+
+        // Check for URL parameters on page load
+        window.onload = function() {
+            const params = getUrlParams();
+            if (params.url) {
+                document.getElementById('url').value = params.url;
+                const downloadUrl = urlMapping[params.url];
+                if (downloadUrl) {
+                    showDownloadButton(downloadUrl);
+                }
+            }
+        };
+
+        function checkAndDownload() {
+            const url = document.getElementById('url').value.trim();
+            const downloadUrl = urlMapping[url];
+            
+            if (downloadUrl) {
+                showDownloadButton(downloadUrl);
+            } else {
+                document.getElementById('result').innerHTML = 'No download link found for this URL';
+            }
+        }
+    </script>
+</body>
+</html> 
